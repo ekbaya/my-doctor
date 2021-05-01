@@ -5,6 +5,7 @@ import 'package:my_doctor/components/search_bar.dart';
 import 'package:my_doctor/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:my_doctor/screens/onboarding_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String idScreen = "home";
@@ -38,7 +39,8 @@ class HomeScreen extends StatelessWidget {
                         width: 16.0,
                       ),
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                       mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             "Profile Name",
@@ -47,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                           SizedBox(
                             height: 6.0,
                           ),
-                          Text("Visit Profile")
+                          Text("Email address")
                         ],
                       )
                     ],
@@ -104,14 +106,20 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.lock),
-                title: Text(
-                  "Logout",
-                  style: TextStyle(
-                    fontSize: 15.0,
+              GestureDetector(
+                child: ListTile(
+                  leading: Icon(Icons.lock),
+                  title: Text(
+                    "Logout",
+                    style: TextStyle(
+                      fontSize: 15.0,
+                    ),
                   ),
                 ),
+                onTap: (){
+                  Navigator.pushNamedAndRemoveUntil(
+                        context, OnboardingScreen.idScreen, (route) => false);
+                },
               ),
             ],
           ),
