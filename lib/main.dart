@@ -1,6 +1,9 @@
+import 'package:my_doctor/screens/home_screen.dart';
+import 'package:my_doctor/screens/login.dart';
 import 'package:my_doctor/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_doctor/screens/registration.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,7 +16,13 @@ class MyApp extends StatelessWidget {
         textTheme:
             GoogleFonts.varelaRoundTextTheme(Theme.of(context).textTheme),
       ),
-      home: OnboardingScreen(),
+      initialRoute: OnboardingScreen.idScreen,
+      routes: {
+        RegistrationScreen.idScreen: (context)=> RegistrationScreen(),
+        LoginScreen.idScreen: (context)=> LoginScreen(),
+        HomeScreen.idScreen: (context)=> HomeScreen(),
+        OnboardingScreen.idScreen: (context)=> OnboardingScreen(),
+      },
     );
   }
 }

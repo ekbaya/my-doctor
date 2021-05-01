@@ -1,8 +1,10 @@
 import 'package:my_doctor/constant.dart';
 import 'package:my_doctor/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:my_doctor/screens/login.dart';
 
 class OnboardingScreen extends StatelessWidget {
+  static const  String idScreen = "onboarding";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,12 +53,8 @@ class OnboardingScreen extends StatelessWidget {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomeScreen(),
-                          ),
-                        );
+                        Navigator.pushNamedAndRemoveUntil(
+                        context, LoginScreen.idScreen, (route) => false);
                       },
                       color: kOrangeColor,
                       padding: EdgeInsets.symmetric(

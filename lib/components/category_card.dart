@@ -12,7 +12,6 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 130,
-      height: 160,
       child: Stack(
         children: <Widget>[
           Card(
@@ -20,8 +19,8 @@ class CategoryCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Container(
-              width: 110,
-              height: 137,
+              width: 100,
+              height: 100,
               padding: EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 16,
@@ -32,6 +31,7 @@ class CategoryCard extends StatelessWidget {
                   _title,
                   style: TextStyle(
                     color: kTitleTextColor,
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -40,8 +40,8 @@ class CategoryCard extends StatelessWidget {
           Positioned(
             right: 0,
             child: Container(
-              height: 84,
-              width: 84,
+              height: 55,
+              width: 55,
               decoration: BoxDecoration(
                 color: _bgColor,
                 borderRadius: BorderRadius.circular(20),

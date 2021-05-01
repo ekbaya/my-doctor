@@ -35,6 +35,7 @@ class DoctorCard extends StatelessWidget {
               style: TextStyle(
                 color: kTitleTextColor,
                 fontWeight: FontWeight.bold,
+                fontSize: 13
               ),
             ),
             subtitle: Text(
