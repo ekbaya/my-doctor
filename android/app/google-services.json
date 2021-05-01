@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "126523820296",
+    "project_id": "m-health-7dec5",
+    "storage_bucket": "m-health-7dec5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126523820296:android:b87053c8b2b344782744bd",
+        "android_client_info": {
+          "package_name": "com.example.my_doctor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "126523820296-9dll9brli4jpu8b5079phrll626777bq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAN7XpXXzL6L4BVuzFrlrgcNdsQX8vREo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "126523820296-9dll9brli4jpu8b5079phrll626777bq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

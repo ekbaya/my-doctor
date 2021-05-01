@@ -1,13 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:my_doctor/screens/home_screen.dart';
 import 'package:my_doctor/screens/registration.dart';
+import 'package:my_doctor/utils/Loader.dart';
+import 'package:my_doctor/utils/MainAppToast.dart';
 
 import '../constant.dart';
+import '../main.dart';
 
 class LoginScreen extends StatelessWidget {
+  final emailEditingController = TextEditingController();
+  final passwordEditingController = TextEditingController();
   static const String idScreen = "login";
+  Loader loader;
   @override
   Widget build(BuildContext context) {
+    loader = Loader(context);
     return Scaffold(
       backgroundColor: kBackgroundColor,
       body: SafeArea(
@@ -48,6 +57,7 @@ class LoginScreen extends StatelessWidget {
                         height: 1.0,
                       ),
                       TextField(
+                        controller: emailEditingController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           labelText: 'Email',
@@ -61,6 +71,7 @@ class LoginScreen extends StatelessWidget {
                         height: 1.0,
                       ),
                       TextField(
+                        controller: passwordEditingController,
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: 'Password',
@@ -75,8 +86,14 @@ class LoginScreen extends StatelessWidget {
                       ),
                       MaterialButton(
                         onPressed: () {
-                           Navigator.pushNamedAndRemoveUntil(
-                        context, HomeScreen.idScreen, (route) => false);
+                          if (!emailEditingController.text.contains("@")) {
+                          displayToastMessage(
+                              context, "Email address is not valid.");
+                        } else if (passwordEditingController.text.isEmpty) {
+                          displayToastMessage(context, "Password is required.");
+                        } else {
+                          loginUser(context);
+                        }
                         },
                         color: kOrangeColor,
                         shape: RoundedRectangleBorder(
@@ -84,6 +101,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                         child: Container(
                           width: MediaQuery.of(context).size.width,
+                          height: 50,
                           child: Center(
                             child: Text(
                               'Login',
@@ -114,5 +132,36 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+
+  void loginUser(BuildContext context) async {
+    loader.showDialogue("Signing in please wait...");
+    try {
+      final User user = (await firebaseAuth.signInWithEmailAndPassword(
+              email: emailEditingController.text,
+              password: passwordEditingController.text))
+          .user;
+      //check if we have user's data in our database
+      userRef
+          .child(user.uid)
+          .once()
+          .then((DataSnapshot dataSnapshot) {
+                if (dataSnapshot.value != null) {
+                  displayToastMessage(
+                      context, "You have been logged in successfully");
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, HomeScreen.idScreen, (route) => false);
+                } else {
+                  loader.hideDialogue();
+                  firebaseAuth.signOut();
+                  displayToastMessage(context,
+                      "No record exist for this user, please create new account");
+                }
+              });
+    } catch (e) {
+      loader.hideDialogue();
+      displayToastMessage(context, "Error: " + e.toString());
+    }
   }
 }

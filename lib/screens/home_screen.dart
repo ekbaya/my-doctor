@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:my_doctor/components/Divider.dart';
 import 'package:my_doctor/components/category_card.dart';
 import 'package:my_doctor/components/doctor_card.dart';
@@ -5,11 +6,62 @@ import 'package:my_doctor/components/search_bar.dart';
 import 'package:my_doctor/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:my_doctor/screens/onboarding_screen.dart';
+import 'package:my_doctor/main.dart';
+import 'package:my_doctor/models/Account.dart';
+import 'package:my_doctor/models/User.dart';
+import 'package:my_doctor/utils/AlerDialog.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   static const String idScreen = "home";
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  String balance = "0";
+  Account userAccount;
+  User user;
+
+  @override
+  void initState() {
+    loadUserAccount();
+    fetchUserProfile();
+    super.initState();
+  }
+
+  void loadUserAccount() async {
+    accountRef
+        .child(firebaseAuth.currentUser.uid)
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value != null) {
+         setState(() {
+          userAccount = new Account.fromSnapshot(dataSnapshot);
+          balance = userAccount.amount;
+         });
+      } else {
+        
+      }
+    });
+  }
+
+  void fetchUserProfile() async{
+    userRef
+        .child(firebaseAuth.currentUser.uid)
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value != null) {
+         setState(() {
+           user = new User.fromSnapshot(dataSnapshot);
+         });
+      } else {
+        
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +69,6 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: kBackgroundColor,
       drawer: Container(
         color: Colors.white,
-        width: 255.0,
         child: Drawer(
           child: ListView(
             children: [
@@ -39,17 +90,17 @@ class HomeScreen extends StatelessWidget {
                         width: 16.0,
                       ),
                       Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Profile Name",
-                            style: TextStyle(fontSize: 16.0),
+                            user != null ? user.name: "Profile name",
+                            style: TextStyle(fontSize: 14.0),
                           ),
                           SizedBox(
                             height: 6.0,
                           ),
-                          Text("Email address")
+                          Text(user != null ? user.email: "Email address", style: TextStyle(fontSize: 12),)
                         ],
                       )
                     ],
@@ -116,9 +167,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                onTap: (){
-                  Navigator.pushNamedAndRemoveUntil(
-                        context, OnboardingScreen.idScreen, (route) => false);
+                onTap: () {
+                  showAlertDialog(context);
                 },
               ),
             ],
@@ -136,9 +186,12 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    GestureDetector(child: SvgPicture.asset('assets/icons/menu.svg'), onTap: (){
-                       scaffoldKey.currentState.openDrawer();
-                    },),
+                    GestureDetector(
+                      child: SvgPicture.asset('assets/icons/menu.svg'),
+                      onTap: () {
+                        scaffoldKey.currentState.openDrawer();
+                      },
+                    ),
                     Row(
                       children: [
                         Stack(
@@ -149,9 +202,7 @@ class HomeScreen extends StatelessWidget {
                                 size: 35,
                                 color: Colors.grey,
                               ),
-                              onPressed: () {
-                               
-                              },
+                              onPressed: () {},
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 5, left: 28),
@@ -194,7 +245,7 @@ class HomeScreen extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     subtitle: Text(
-                      "KES 20,000",
+                      "KES "+ balance,
                       style: TextStyle(fontSize: 13),
                     ),
                     trailing: MaterialButton(

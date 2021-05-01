@@ -1,3 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:my_doctor/screens/home_screen.dart';
 import 'package:my_doctor/screens/login.dart';
 import 'package:my_doctor/screens/onboarding_screen.dart';
@@ -5,7 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_doctor/screens/registration.dart';
 
-void main() => runApp(MyApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
+
+DatabaseReference userRef = FirebaseDatabase.instance.reference().child("users");
+DatabaseReference accountRef = FirebaseDatabase.instance.reference().child("accounts");
+final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 class MyApp extends StatelessWidget {
   @override
