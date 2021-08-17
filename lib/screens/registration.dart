@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_doctor/screens/doctors_registration.dart';
 import 'package:my_doctor/screens/home_screen.dart';
 import 'package:my_doctor/screens/login.dart';
 import 'package:my_doctor/utils/Loader.dart';
@@ -204,6 +205,49 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.43,
+                      child: Divider(
+                        indent: 20,
+                        thickness: 1,
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Text("OR"),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.43,
+                      child: Divider(
+                        endIndent: 20,
+                        thickness: 1,
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return DoctorsRegistration();
+                        },
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "********** Register as a doctor ********",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
               ],
             ),
           ),
@@ -226,21 +270,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         "email": emailController.text.trim(),
         "phone": phoneController.text.trim(),
         "nationalId": idController.text.trim(),
-        "image":""
+        "image": ""
       };
 
-      Map accountDataMap = {
-        "id": user.uid,
-        "amount": "2000",
-        "type":"user"
-      };
+      Map accountDataMap = {"id": user.uid, "amount": "2000", "type": "user"};
 
       userRef.child(user.uid).set(userDataMap);
       accountRef.child(user.uid).set(accountDataMap);
 
       displayToastMessage(context,
           "Congratulations! your account has been created successfully");
-      
+
       Navigator.pushNamedAndRemoveUntil(
           context, HomeScreen.idScreen, (route) => false);
     } catch (e) {

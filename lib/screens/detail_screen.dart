@@ -93,9 +93,8 @@ class DetailScreen extends StatelessWidget {
                               Text(
                                 _description,
                                 style: TextStyle(
-                                  color: kTitleTextColor.withOpacity(0.7),
-                                  fontSize: 12
-                                ),
+                                    color: kTitleTextColor.withOpacity(0.7),
+                                    fontSize: 12),
                               ),
                               SizedBox(
                                 height: 10,
@@ -214,6 +213,19 @@ class DetailScreen extends StatelessWidget {
                 ),
               )
             ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 45,
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+            color: Colors.amber, borderRadius: BorderRadius.circular(5)),
+        child: Center(
+          child: Text(
+            "Book Appointment",
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
       ),

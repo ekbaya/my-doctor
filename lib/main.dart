@@ -16,6 +16,7 @@ void main() async{
 
 DatabaseReference userRef = FirebaseDatabase.instance.reference().child("users");
 DatabaseReference accountRef = FirebaseDatabase.instance.reference().child("accounts");
+DatabaseReference categoriesRef = FirebaseDatabase.instance.reference().child("categories");
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 class MyApp extends StatelessWidget {
