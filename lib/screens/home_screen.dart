@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:my_doctor/main.dart';
 import 'package:my_doctor/models/Account.dart';
 import 'package:my_doctor/models/User.dart';
+import 'package:my_doctor/screens/Transaction_page.dart';
 import 'package:my_doctor/screens/consultation_history.dart';
 import 'package:my_doctor/screens/profile_page.dart';
 import 'package:my_doctor/utils/AlerDialog.dart';
@@ -113,12 +114,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 12.0,
               ),
               //Drawer Body
-              ListTile(
-                leading: Icon(Icons.history),
-                title: Text(
-                  "Transaction history",
-                  style: TextStyle(
-                    fontSize: 15.0,
+              GestureDetector(
+                onTap: (){
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TransactionsPage()),
+                  );
+                },
+                child: ListTile(
+                  leading: Icon(Icons.history),
+                  title: Text(
+                    "Transaction history",
+                    style: TextStyle(
+                      fontSize: 15.0,
+                    ),
                   ),
                 ),
               ),
