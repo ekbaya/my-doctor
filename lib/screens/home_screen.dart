@@ -10,6 +10,7 @@ import 'package:my_doctor/main.dart';
 import 'package:my_doctor/models/Account.dart';
 import 'package:my_doctor/models/User.dart';
 import 'package:my_doctor/screens/consultation_history.dart';
+import 'package:my_doctor/screens/profile_page.dart';
 import 'package:my_doctor/utils/AlerDialog.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -138,12 +139,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text(
-                  "Visist Profile",
-                  style: TextStyle(
-                    fontSize: 15.0,
+              GestureDetector(
+                onTap: (){
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                  );
+                },
+                child: ListTile(
+                  leading: Icon(Icons.person),
+                  title: Text(
+                    "Visist Profile",
+                    style: TextStyle(
+                      fontSize: 15.0,
+                    ),
                   ),
                 ),
               ),
