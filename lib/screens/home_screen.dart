@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:my_doctor/main.dart';
 import 'package:my_doctor/models/Account.dart';
 import 'package:my_doctor/models/User.dart';
+import 'package:my_doctor/screens/consultation_history.dart';
 import 'package:my_doctor/utils/AlerDialog.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -37,28 +38,24 @@ class _HomeScreenState extends State<HomeScreen> {
         .once()
         .then((DataSnapshot dataSnapshot) {
       if (dataSnapshot.value != null) {
-         setState(() {
+        setState(() {
           userAccount = new Account.fromSnapshot(dataSnapshot);
           balance = userAccount.amount;
-         });
-      } else {
-        
-      }
+        });
+      } else {}
     });
   }
 
-  void fetchUserProfile() async{
+  void fetchUserProfile() async {
     userRef
         .child(firebaseAuth.currentUser.uid)
         .once()
         .then((DataSnapshot dataSnapshot) {
       if (dataSnapshot.value != null) {
-         setState(() {
-           user = new User.fromSnapshot(dataSnapshot);
-         });
-      } else {
-        
-      }
+        setState(() {
+          user = new User.fromSnapshot(dataSnapshot);
+        });
+      } else {}
     });
   }
 
@@ -94,13 +91,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            user != null ? user.name: "Profile name",
+                            user != null ? user.name : "Profile name",
                             style: TextStyle(fontSize: 14.0),
                           ),
                           SizedBox(
                             height: 6.0,
                           ),
-                          Text(user != null ? user.email: "Email address", style: TextStyle(fontSize: 12),)
+                          Text(
+                            user != null ? user.email : "Email address",
+                            style: TextStyle(fontSize: 12),
+                          )
                         ],
                       )
                     ],
@@ -121,12 +121,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.history),
-                title: Text(
-                  "Consultation history",
-                  style: TextStyle(
-                    fontSize: 15.0,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ConsultationHistory()),
+                  );
+                },
+                child: ListTile(
+                  leading: Icon(Icons.history),
+                  title: Text(
+                    "Consultation history",
+                    style: TextStyle(
+                      fontSize: 15.0,
+                    ),
                   ),
                 ),
               ),
@@ -245,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     subtitle: Text(
-                      "KES "+ balance,
+                      "KES " + balance,
                       style: TextStyle(fontSize: 13),
                     ),
                     trailing: MaterialButton(
