@@ -14,6 +14,7 @@ class DetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
