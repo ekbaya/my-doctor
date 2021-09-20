@@ -3,8 +3,13 @@ import 'package:my_doctor/components/schedule_card.dart';
 import 'package:my_doctor/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:my_doctor/controllers/AppointmentDaO.dart';
 import 'package:my_doctor/controllers/SceduleDaO.dart';
+import 'package:my_doctor/main.dart';
+import 'package:my_doctor/models/Appointment.dart';
 import 'package:my_doctor/models/Schedule.dart';
+import 'package:my_doctor/utils/Loader.dart';
+import 'package:my_doctor/utils/MainAppToast.dart';
 
 class DetailScreen extends StatefulWidget {
   var _name;
@@ -21,10 +26,13 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   ScrollController _scrollController = ScrollController();
   int selectedIndex = -1;
-  String selectedScheduleId = "";
+  Schedule selectedSchedule;
   @override
   Widget build(BuildContext context) {
     final ScheduleDao scheduleDao = ScheduleDao();
+    final AppointmentDaO appointmentDaO = AppointmentDaO();
+    Loader loader = Loader(context);
+
     return Scaffold(
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -208,7 +216,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                   if (!schedule.status.contains("booked")) {
                                     setState(() {
                                       selectedIndex = index;
-                                      selectedScheduleId = schedule.scheduleID;
+                                      selectedSchedule = schedule;
                                     });
                                   }
                                 },
@@ -235,16 +243,46 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 45,
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-            color: Colors.amber, borderRadius: BorderRadius.circular(5)),
-        child: Center(
-          child: Text(
-            "Book Appointment",
-            style: TextStyle(fontWeight: FontWeight.w600),
+      bottomNavigationBar: GestureDetector(
+        onTap: () {
+          if (selectedSchedule == null) {
+            displayToastMessage(context, "Please select a schedule to book");
+          } else {
+            String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+            Appointment appointment = Appointment(
+                day: selectedSchedule.date,
+                month: selectedSchedule.month,
+                year: selectedSchedule.year,
+                description: selectedSchedule.description,
+                charge: selectedSchedule.charge,
+                name: selectedSchedule.name,
+                status: selectedSchedule.status,
+                id: timestamp,
+                doctorId: widget.doctor_id,
+                userId: firebaseAuth.currentUser.uid,
+                scheduleId: selectedSchedule.scheduleID,
+                doctorName: widget._name);
+            displayToastMessage(context, "Booking...");
+            appointmentDaO.saveAppointment(appointment);
+            scheduleDao.markScheduleAsBooked(widget.doctor_id, selectedSchedule.scheduleID);
+            displayToastMessage(context, "Success");
+            setState(() {
+              selectedSchedule = null;
+              selectedIndex = -1;
+            });
+          }
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: 45,
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          decoration: BoxDecoration(
+              color: Colors.amber, borderRadius: BorderRadius.circular(5)),
+          child: Center(
+            child: Text(
+              "Book Appointment",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
           ),
         ),
       ),
