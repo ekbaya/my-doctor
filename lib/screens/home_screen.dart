@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:my_doctor/components/Divider.dart';
 import 'package:my_doctor/components/category_card.dart';
 import 'package:my_doctor/components/doctor_card.dart';
@@ -6,8 +7,10 @@ import 'package:my_doctor/components/search_bar.dart';
 import 'package:my_doctor/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:my_doctor/controllers/DoctoctorsDaO.dart';
 import 'package:my_doctor/main.dart';
 import 'package:my_doctor/models/Account.dart';
+import 'package:my_doctor/models/Doctor.dart';
 import 'package:my_doctor/models/User.dart';
 import 'package:my_doctor/screens/Transaction_page.dart';
 import 'package:my_doctor/screens/consultation_history.dart';
@@ -26,6 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String balance = "0";
   Account userAccount;
   User user;
+
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -63,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final doctorDao = DoctorDao();
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: kBackgroundColor,
@@ -115,8 +121,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               //Drawer Body
               GestureDetector(
-                onTap: (){
-                   Navigator.push(
+                onTap: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => TransactionsPage()),
                   );
@@ -135,7 +141,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ConsultationHistory()),
+                    MaterialPageRoute(
+                        builder: (context) => ConsultationHistory()),
                   );
                 },
                 child: ListTile(
@@ -149,8 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
-                   Navigator.push(
+                onTap: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ProfilePage()),
                   );
@@ -339,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 child: Text(
-                  'Top Doctors',
+                  'Doctors',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: kTitleTextColor,
@@ -350,7 +357,29 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 20,
               ),
-              buildDoctorList(),
+              // buildDoctorList(),//////////////////////////////////////////////
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.75,
+                child: FirebaseAnimatedList(
+                  controller: _scrollController,
+                  query: doctorDao.getDoctorsQuery(),
+                  itemBuilder: (context, snapshot, animation, index) {
+                    final json = snapshot.value as Map<dynamic, dynamic>;
+                    final doctor = Doctor.fromJson(json);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      child: DoctorCard(
+                        '${doctor.name}',
+                        '${doctor.specialization} - ${doctor.hospital}',
+                        '${doctor.image}',
+                        kOrangeColor,
+                        doctor.doctorId
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -395,42 +424,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  buildDoctorList() {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 30,
-      ),
-      child: Column(
-        children: <Widget>[
-          DoctorCard(
-            'Dr. Davin Wangari',
-            'Heart Surgeon - Kitisuru Hospitals',
-            'assets/images/doctor1.png',
-            kBlueColor,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          DoctorCard(
-            'Dr. Elias Baya',
-            'Dental Surgeon - Flower Hospitals',
-            'assets/images/doctor2.png',
-            kYellowColor,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          DoctorCard(
-            'Dr. Loise Baya',
-            'Eye Specialist - Flower Hospitals',
-            'assets/images/doctor3.png',
-            kOrangeColor,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-        ],
-      ),
-    );
-  }
 }
