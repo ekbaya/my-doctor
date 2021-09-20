@@ -69,6 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final doctorDao = DoctorDao();
+    Future.delayed(Duration(milliseconds: 100), () {
+      loadUserAccount();
+    });
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: kBackgroundColor,
@@ -367,14 +370,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     final json = snapshot.value as Map<dynamic, dynamic>;
                     final doctor = Doctor.fromJson(json);
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
                       child: DoctorCard(
-                        '${doctor.name}',
-                        '${doctor.specialization} - ${doctor.hospital}',
-                        '${doctor.image}',
-                        kOrangeColor,
-                        doctor.doctorId
-                      ),
+                          '${doctor.name}',
+                          '${doctor.specialization} - ${doctor.hospital}',
+                          '${doctor.image}',
+                          kOrangeColor,
+                          doctor.doctorId),
                     );
                   },
                 ),
@@ -422,5 +425,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 }

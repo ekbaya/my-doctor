@@ -1,15 +1,21 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:my_doctor/components/schedule_card.dart';
 import 'package:my_doctor/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:my_doctor/controllers/AccountDaO.dart';
 import 'package:my_doctor/controllers/AppointmentDaO.dart';
 import 'package:my_doctor/controllers/SceduleDaO.dart';
+import 'package:my_doctor/controllers/TransactionsDaO.dart';
 import 'package:my_doctor/main.dart';
+import 'package:my_doctor/models/Account.dart';
 import 'package:my_doctor/models/Appointment.dart';
 import 'package:my_doctor/models/Schedule.dart';
+import 'package:my_doctor/models/Transaction.dart';
 import 'package:my_doctor/utils/Loader.dart';
 import 'package:my_doctor/utils/MainAppToast.dart';
+import 'package:intl/intl.dart';
 
 class DetailScreen extends StatefulWidget {
   var _name;
@@ -27,10 +33,33 @@ class _DetailScreenState extends State<DetailScreen> {
   ScrollController _scrollController = ScrollController();
   int selectedIndex = -1;
   Schedule selectedSchedule;
+  Account account;
+
+  @override
+  void initState() {
+    loadUserAccount();
+    super.initState();
+  }
+
+  void loadUserAccount() async {
+    accountRef
+        .child(firebaseAuth.currentUser.uid)
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value != null) {
+        setState(() {
+          account = new Account.fromSnapshot(dataSnapshot);
+        });
+      } else {}
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final ScheduleDao scheduleDao = ScheduleDao();
     final AppointmentDaO appointmentDaO = AppointmentDaO();
+    final AccountDaO accountDaO = AccountDaO();
+    final TransactionsDaO transactionsDaO = TransactionsDaO();
     Loader loader = Loader(context);
 
     return Scaffold(
@@ -248,28 +277,52 @@ class _DetailScreenState extends State<DetailScreen> {
           if (selectedSchedule == null) {
             displayToastMessage(context, "Please select a schedule to book");
           } else {
-            String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-            Appointment appointment = Appointment(
-                day: selectedSchedule.date,
-                month: selectedSchedule.month,
-                year: selectedSchedule.year,
-                description: selectedSchedule.description,
-                charge: selectedSchedule.charge,
-                name: selectedSchedule.name,
-                status: selectedSchedule.status,
-                id: timestamp,
-                doctorId: widget.doctor_id,
-                userId: firebaseAuth.currentUser.uid,
-                scheduleId: selectedSchedule.scheduleID,
-                doctorName: widget._name);
-            displayToastMessage(context, "Booking...");
-            appointmentDaO.saveAppointment(appointment);
-            scheduleDao.markScheduleAsBooked(widget.doctor_id, selectedSchedule.scheduleID);
-            displayToastMessage(context, "Success");
-            setState(() {
-              selectedSchedule = null;
-              selectedIndex = -1;
-            });
+            if (int.parse(account.amount) <
+                int.parse(selectedSchedule.charge)) {
+              displayToastMessage(context,
+                  "You have Insufficient funds please load your account");
+            } else {
+              String timestamp =
+                  DateTime.now().millisecondsSinceEpoch.toString();
+              final DateTime now = DateTime.now();
+              final DateFormat formatter = DateFormat('yyyy-MM-dd');
+              final String formatted = formatter.format(now);
+              Appointment appointment = Appointment(
+                  day: selectedSchedule.date,
+                  month: selectedSchedule.month,
+                  year: selectedSchedule.year,
+                  description: selectedSchedule.description,
+                  charge: selectedSchedule.charge,
+                  name: selectedSchedule.name,
+                  status: selectedSchedule.status,
+                  id: timestamp,
+                  doctorId: widget.doctor_id,
+                  userId: firebaseAuth.currentUser.uid,
+                  scheduleId: selectedSchedule.scheduleID,
+                  doctorName: widget._name);
+              displayToastMessage(context, "Booking...");
+              appointmentDaO.saveAppointment(appointment);
+              scheduleDao.markScheduleAsBooked(
+                  widget.doctor_id, selectedSchedule.scheduleID);
+              String newBalance =
+                  (int.parse(account.amount) - int.parse(appointment.charge))
+                      .toString();
+              accountDaO.updateUserAccountBalance(newBalance);
+              Transaction transaction = Transaction(
+                  description: selectedSchedule.name,
+                  id: timestamp,
+                  date: formatted,
+                  refrence: timestamp,
+                  userId: firebaseAuth.currentUser.uid,
+                  amount: selectedSchedule.charge);
+              transactionsDaO.saveTransaction(transaction);
+              loadUserAccount();
+              displayToastMessage(context, "Success");
+              setState(() {
+                selectedSchedule = null;
+                selectedIndex = -1;
+              });
+            }
           }
         },
         child: Container(
