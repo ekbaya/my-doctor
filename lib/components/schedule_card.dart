@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 
 class ScheduleCard extends StatelessWidget {
   var _title;
+  var _charge;
   var _description;
   var _date;
   var _month;
   var _bgColor;
+  var status;
 
   ScheduleCard(
-      this._title, this._description, this._date, this._month, this._bgColor);
+      this._title, this._description, this._date, this._month, this._bgColor, this._charge, this.status);
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +60,28 @@ class ScheduleCard extends StatelessWidget {
               color: kTitleTextColor,
             ),
           ),
-          subtitle: Text(
-            _description.toString(),
-            style: TextStyle(
-              color: kTitleTextColor.withOpacity(0.7),
-            ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _description.toString(),
+                style: TextStyle(
+                  color: kTitleTextColor.withOpacity(0.7),
+                ),
+              ),
+              Text(
+                'Charge: $_charge',
+                style: TextStyle(
+                  color: kTitleTextColor.withOpacity(0.7),
+                ),
+              ),
+              Text(
+                'Status: $status',
+                style: TextStyle(
+                  color: status.contains("booked") ? Colors.redAccent: Colors.green,
+                ),
+              ),
+            ],
           ),
         ),
       ),

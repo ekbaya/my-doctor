@@ -20,6 +20,8 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   ScrollController _scrollController = ScrollController();
+  int selectedIndex = -1;
+  String selectedScheduleId = "";
   @override
   Widget build(BuildContext context) {
     final ScheduleDao scheduleDao = ScheduleDao();
@@ -190,11 +192,10 @@ class _DetailScreenState extends State<DetailScreen> {
                       Container(
                         height: 500,
                         width: MediaQuery.of(context).size.width,
-                       
                         child: FirebaseAnimatedList(
                           controller: _scrollController,
-                          query:
-                              scheduleDao.getDoctorSchedulesQuery(widget.doctor_id),
+                          query: scheduleDao
+                              .getDoctorSchedulesQuery(widget.doctor_id),
                           itemBuilder: (context, snapshot, animation, index) {
                             final json =
                                 snapshot.value as Map<dynamic, dynamic>;
@@ -203,22 +204,29 @@ class _DetailScreenState extends State<DetailScreen> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 10),
                               child: GestureDetector(
-                                onTap: (){
-                                  
+                                onTap: () {
+                                  if (!schedule.status.contains("booked")) {
+                                    setState(() {
+                                      selectedIndex = index;
+                                      selectedScheduleId = schedule.scheduleID;
+                                    });
+                                  }
                                 },
                                 child: ScheduleCard(
-                                  schedule.name,
-                                  schedule.description,
-                                  schedule.date,
-                                  schedule.month,
-                                  kBlueColor,
-                                ),
+                                    schedule.name,
+                                    schedule.description,
+                                    schedule.date,
+                                    schedule.month,
+                                    selectedIndex == index
+                                        ? kOrangeColor
+                                        : kBlueColor,
+                                    schedule.charge,
+                                    schedule.status),
                               ),
                             );
                           },
                         ),
                       ),
-                      
                     ],
                   ),
                 ),
