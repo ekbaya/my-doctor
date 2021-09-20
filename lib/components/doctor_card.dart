@@ -7,8 +7,9 @@ class DoctorCard extends StatelessWidget {
   var _description;
   var _imageUrl;
   var _bgColor;
+  var doctor_id;
 
-  DoctorCard(this._name, this._description, this._imageUrl, this._bgColor);
+  DoctorCard(this._name, this._description, this._imageUrl, this._bgColor, this.doctor_id);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class DoctorCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailScreen(_name, _description, _imageUrl),
+            builder: (context) => DetailScreen(_name, _description, _imageUrl, doctor_id),
           ),
         );
       },
@@ -29,7 +30,7 @@ class DoctorCard extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(10),
           child: ListTile(
-            leading: Image.asset(_imageUrl),
+            leading: Image.network(_imageUrl),
             title: Text(
               _name,
               style: TextStyle(

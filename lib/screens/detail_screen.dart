@@ -1,17 +1,28 @@
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:my_doctor/components/schedule_card.dart';
 import 'package:my_doctor/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:my_doctor/controllers/SceduleDaO.dart';
+import 'package:my_doctor/models/Schedule.dart';
 
-class DetailScreen extends StatelessWidget {
+class DetailScreen extends StatefulWidget {
   var _name;
   var _description;
   var _imageUrl;
+  var doctor_id;
 
-  DetailScreen(this._name, this._description, this._imageUrl);
+  DetailScreen(this._name, this._description, this._imageUrl, this.doctor_id);
 
   @override
+  _DetailScreenState createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  ScrollController _scrollController = ScrollController();
+  @override
   Widget build(BuildContext context) {
+    final ScheduleDao scheduleDao = ScheduleDao();
     return Scaffold(
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -70,8 +81,8 @@ class DetailScreen extends StatelessWidget {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          Image.asset(
-                            _imageUrl,
+                          Image.network(
+                            widget._imageUrl,
                             height: 120,
                           ),
                           SizedBox(
@@ -81,7 +92,7 @@ class DetailScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                _name,
+                                widget._name,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
@@ -92,7 +103,7 @@ class DetailScreen extends StatelessWidget {
                                 height: 10,
                               ),
                               Text(
-                                _description,
+                                widget._description,
                                 style: TextStyle(
                                     color: kTitleTextColor.withOpacity(0.7),
                                     fontSize: 12),
@@ -159,7 +170,7 @@ class DetailScreen extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        '$_name is the top most heart surgeon in Flower\nHospital. She has done over 100 successful sugeries\nwithin past 3 years. She has achieved several\nawards for her wonderful contribution in her own\nfield. She’s available for private consultation for\ngiven schedules.',
+                        '${widget._name} is the top most heart surgeon in Flower\nHospital. She has done over 100 successful sugeries\nwithin past 3 years. She has achieved several\nawards for her wonderful contribution in her own\nfield. She’s available for private consultation for\ngiven schedules.',
                         style: TextStyle(
                           height: 1.6,
                           color: kTitleTextColor.withOpacity(0.7),
@@ -169,46 +180,45 @@ class DetailScreen extends StatelessWidget {
                         height: 20,
                       ),
                       Text(
-                        'Upcoming Schedules',
+                        'Doctor\'s Schedules',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                           color: kTitleTextColor,
                         ),
                       ),
-                      SizedBox(
-                        height: 20,
+                      Container(
+                        height: 500,
+                        width: MediaQuery.of(context).size.width,
+                       
+                        child: FirebaseAnimatedList(
+                          controller: _scrollController,
+                          query:
+                              scheduleDao.getDoctorSchedulesQuery(widget.doctor_id),
+                          itemBuilder: (context, snapshot, animation, index) {
+                            final json =
+                                snapshot.value as Map<dynamic, dynamic>;
+                            final schedule = Schedule.fromJson(json);
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              child: GestureDetector(
+                                onTap: (){
+                                  
+                                },
+                                child: ScheduleCard(
+                                  schedule.name,
+                                  schedule.description,
+                                  schedule.date,
+                                  schedule.month,
+                                  kBlueColor,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                      ScheduleCard(
-                        'Consultation',
-                        'Sunday . 9am - 11am',
-                        '12',
-                        'Jan',
-                        kBlueColor,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ScheduleCard(
-                        'Consultation',
-                        'Sunday . 9am - 11am',
-                        '13',
-                        'Jan',
-                        kYellowColor,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ScheduleCard(
-                        'Consultation',
-                        'Sunday . 9am - 11am',
-                        '14',
-                        'Jan',
-                        kOrangeColor,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
+                      
                     ],
                   ),
                 ),
