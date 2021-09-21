@@ -11,14 +11,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:my_doctor/controllers/AccountDaO.dart';
 import 'package:my_doctor/controllers/DoctoctorsDaO.dart';
+import 'package:my_doctor/controllers/TransactionsDaO.dart';
 import 'package:my_doctor/main.dart';
 import 'package:my_doctor/models/Account.dart';
 import 'package:my_doctor/models/Doctor.dart';
+import 'package:my_doctor/models/Transaction.dart';
 import 'package:my_doctor/models/User.dart';
 import 'package:my_doctor/screens/Transaction_page.dart';
 import 'package:my_doctor/screens/consultation_history.dart';
 import 'package:my_doctor/screens/profile_page.dart';
 import 'package:my_doctor/utils/AlerDialog.dart';
+import 'package:intl/intl.dart';
+import 'package:my_doctor/utils/MainAppToast.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String idScreen = "home";
@@ -73,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final accountDaO = AccountDaO();
     final doctorDao = DoctorDao();
+    final transactionsDaO = TransactionsDaO();
     Future.delayed(Duration(milliseconds: 100), () {
       loadUserAccount();
     });
@@ -289,14 +294,31 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontSize: 13),
                     ),
                     trailing: MaterialButton(
-                      onPressed: () {
+                      onPressed: () async {
                         lipaNaMpesa();
 
                         int amount = int.parse(userAccount.amount);
                         int newBalance = amount + 1000;
+                        // update balace
+                        accountDaO
+                            .updateUserAccountBalance(newBalance.toString());
 
-                         // update balace
-                         accountDaO.updateUserAccountBalance(newBalance.toString());
+                        String timestamp =
+                            DateTime.now().millisecondsSinceEpoch.toString();
+                        final DateTime now = DateTime.now();
+                        final DateFormat formatter = DateFormat('yyyy-MM-dd');
+                        final String formatted = formatter.format(now);
+
+                        Transaction transaction = Transaction(
+                            description:"Mpesa Deposits",
+                            id: timestamp,
+                            date: formatted,
+                            refrence: timestamp,
+                            userId: firebaseAuth.currentUser.uid,
+                            amount: "1000");
+                        transactionsDaO.saveTransaction(transaction);
+                        loadUserAccount();
+                        displayToastMessage(context, "Success");
                       },
                       color: kOrangeColor,
                       padding: EdgeInsets.symmetric(
@@ -445,14 +467,14 @@ class _HomeScreenState extends State<HomeScreen> {
           businessShortCode: "174379",
           transactionType: TransactionType.CustomerPayBillOnline,
           amount: 1.0,
-          partyA: user.phone,
+          partyA: "254${user.phone.substring(1)}",
           partyB: "174379",
           callBackURL: Uri(
               scheme: "https",
               host: "mpesa-requestbin.herokuapp.com",
               path: "/1hhy6391"),
-          accountReference: "Juja Foods Delivery APP",
-          phoneNumber: user.phone,
+          accountReference: "M-Health Payments",
+          phoneNumber: "254${user.phone.substring(1)}",
           baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
           transactionDesc: "purchase",
           passKey:

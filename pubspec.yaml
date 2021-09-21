@@ -37,6 +37,7 @@ dependencies:
   fluttertoast: ^8.0.6
   progress_dialog: ^1.2.0
   mpesa_flutter_plugin: ^1.0.0
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:
