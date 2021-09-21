@@ -273,7 +273,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         "image": ""
       };
 
-      Map accountDataMap = {"id": user.uid, "amount": "2000", "type": "user"};
+      Map accountDataMap = {"id": user.uid, "amount": "0", "type": "user"};
 
       userRef.child(user.uid).set(userDataMap);
       accountRef.child(user.uid).set(accountDataMap);
