@@ -9,6 +9,7 @@ import 'package:my_doctor/components/search_bar.dart';
 import 'package:my_doctor/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:my_doctor/controllers/AccountDaO.dart';
 import 'package:my_doctor/controllers/DoctoctorsDaO.dart';
 import 'package:my_doctor/main.dart';
 import 'package:my_doctor/models/Account.dart';
@@ -70,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final accountDaO = AccountDaO();
     final doctorDao = DoctorDao();
     Future.delayed(Duration(milliseconds: 100), () {
       loadUserAccount();
@@ -289,6 +291,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     trailing: MaterialButton(
                       onPressed: () {
                         lipaNaMpesa();
+
+                        int amount = int.parse(userAccount.amount);
+                        int newBalance = amount + 1000;
+
+                         // update balace
+                         accountDaO.updateUserAccountBalance(newBalance.toString());
                       },
                       color: kOrangeColor,
                       padding: EdgeInsets.symmetric(
