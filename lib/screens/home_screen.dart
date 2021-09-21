@@ -467,14 +467,14 @@ class _HomeScreenState extends State<HomeScreen> {
           businessShortCode: "174379",
           transactionType: TransactionType.CustomerPayBillOnline,
           amount: 1.0,
-          partyA: user.phone,
+          partyA: "254${user.phone.substring(1)}",
           partyB: "174379",
           callBackURL: Uri(
               scheme: "https",
               host: "mpesa-requestbin.herokuapp.com",
               path: "/1hhy6391"),
-          accountReference: "Juja Foods Delivery APP",
-          phoneNumber: user.phone,
+          accountReference: "M-Health Payments",
+          phoneNumber: "254${user.phone.substring(1)}",
           baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
           transactionDesc: "purchase",
           passKey:
