@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:mpesa_flutter_plugin/initializer.dart';
 import 'package:my_doctor/screens/home_screen.dart';
 import 'package:my_doctor/screens/login.dart';
 import 'package:my_doctor/screens/onboarding_screen.dart';
@@ -10,6 +11,8 @@ import 'package:my_doctor/screens/registration.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  MpesaFlutterPlugin.setConsumerKey("HR28DI2GWXa3Zn550f9dB2HyXKCTerw7");
+  MpesaFlutterPlugin.setConsumerSecret("zU4wGQ4S3e10ahCl");
   await Firebase.initializeApp();
   runApp(MyApp());
 }

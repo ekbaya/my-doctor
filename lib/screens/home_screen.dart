@@ -1,5 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:mpesa_flutter_plugin/initializer.dart';
+import 'package:mpesa_flutter_plugin/payment_enums.dart';
 import 'package:my_doctor/components/Divider.dart';
 import 'package:my_doctor/components/category_card.dart';
 import 'package:my_doctor/components/doctor_card.dart';
@@ -285,7 +287,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontSize: 13),
                     ),
                     trailing: MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        lipaNaMpesa();
+                      },
                       color: kOrangeColor,
                       padding: EdgeInsets.symmetric(
                         horizontal: 15,
@@ -424,5 +428,31 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> lipaNaMpesa() async {
+    dynamic transactionInitialisation;
+    try {
+      transactionInitialisation = await MpesaFlutterPlugin.initializeMpesaSTKPush(
+          businessShortCode: "174379",
+          transactionType: TransactionType.CustomerPayBillOnline,
+          amount: 1.0,
+          partyA: user.phone,
+          partyB: "174379",
+          callBackURL: Uri(
+              scheme: "https",
+              host: "mpesa-requestbin.herokuapp.com",
+              path: "/1hhy6391"),
+          accountReference: "Juja Foods Delivery APP",
+          phoneNumber: user.phone,
+          baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
+          transactionDesc: "purchase",
+          passKey:
+              "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919");
+
+      return transactionInitialisation;
+    } catch (e) {
+      print("CAUGHT EXCEPTION: " + e.toString());
+    }
   }
 }

@@ -3,7 +3,7 @@ class Transaction{
 
   Transaction({this.description, this.id, this.amount, this.date, this.refrence, this.userId});
 
-  factory Transaction.fromJson(Map<dynamic, dynamic> json)=> scheduleFromJson(json);
+  factory Transaction.fromJson(Map<dynamic, dynamic> json)=> transactionFromJson(json);
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
       'description': description,
@@ -15,7 +15,7 @@ class Transaction{
     };
 }
 
-Transaction scheduleFromJson(Map<dynamic, dynamic> json){
+Transaction transactionFromJson(Map<dynamic, dynamic> json){
   return Transaction(
     description: json['description'] as String,
     date: json['date'] as String,
