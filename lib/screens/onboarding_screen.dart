@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:my_doctor/constant.dart';
 import 'package:my_doctor/main.dart';
+import 'package:my_doctor/models/Account.dart';
+import 'package:my_doctor/screens/doctors_Admin_Dashboard.dart';
 import 'package:my_doctor/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:my_doctor/screens/login.dart';
@@ -80,9 +83,31 @@ class OnboardingScreen extends StatelessWidget {
                       MaterialButton(
                         onPressed: () {
                           User user = firebaseAuth.currentUser;
+
                           if (user != null) {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, HomeScreen.idScreen, (route) => false);
+                            userRef
+                                .child(user.uid)
+                                .once()
+                                .then((DataSnapshot dataSnapshot) {
+                              if (dataSnapshot.value != null) {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    HomeScreen.idScreen, (route) => false);
+                              } else {
+                                doctorsRef
+                                    .child(user.uid)
+                                    .once()
+                                    .then((DataSnapshot dataSnapshot) {
+                                  if (dataSnapshot.value != null) {
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        DoctorsAdminDashboard.idScreen,
+                                        (route) => false);
+                                  } else {
+                                    firebaseAuth.signOut();
+                                  }
+                                });
+                              }
+                            });
                           } else {
                             Navigator.pushNamedAndRemoveUntil(context,
                                 LoginScreen.idScreen, (route) => false);

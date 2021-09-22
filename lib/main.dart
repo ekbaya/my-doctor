@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_doctor/screens/registration.dart';
 
+import 'screens/doctors_Admin_Dashboard.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   MpesaFlutterPlugin.setConsumerKey("HR28DI2GWXa3Zn550f9dB2HyXKCTerw7");
@@ -18,6 +20,7 @@ void main() async{
 }
 
 DatabaseReference userRef = FirebaseDatabase.instance.reference().child("users");
+DatabaseReference doctorsRef = FirebaseDatabase.instance.reference().child("doctors");
 DatabaseReference accountRef = FirebaseDatabase.instance.reference().child("accounts");
 DatabaseReference categoriesRef = FirebaseDatabase.instance.reference().child("categories");
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -37,6 +40,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.idScreen: (context)=> LoginScreen(),
         HomeScreen.idScreen: (context)=> HomeScreen(),
         OnboardingScreen.idScreen: (context)=> OnboardingScreen(),
+        DoctorsAdminDashboard.idScreen: (context)=> DoctorsAdminDashboard(),
       },
     );
   }

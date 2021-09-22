@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_doctor/constant.dart';
+import 'package:my_doctor/main.dart';
 
 class DoctorsRegistration extends StatefulWidget {
   @override
@@ -8,6 +10,12 @@ class DoctorsRegistration extends StatefulWidget {
 
 class _DoctorsRegistrationState extends State<DoctorsRegistration> {
   final emailEditingController = TextEditingController();
+  final passwordEditingController = TextEditingController();
+  final nameEditingController = TextEditingController();
+  final hospitalEditingController = TextEditingController();
+  final phoneEditingController = TextEditingController();
+  final specializationEditingController = TextEditingController();
+  final aboutEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +43,7 @@ class _DoctorsRegistrationState extends State<DoctorsRegistration> {
                         color: Colors.grey,
                       ),
                       Text(
-                        "Sign In",
+                        "Register",
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -65,6 +73,91 @@ class _DoctorsRegistrationState extends State<DoctorsRegistration> {
                         ),
                         style: TextStyle(fontSize: 14.0),
                       ),
+                       SizedBox(
+                        height: 1.0,
+                      ),
+                      TextField(
+                        obscureText: true,
+                        controller: passwordEditingController,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: TextStyle(fontSize: 14.0),
+                          hintStyle:
+                              TextStyle(fontSize: 10.0, color: Colors.grey),
+                        ),
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                      SizedBox(
+                        height: 1.0,
+                      ),
+                      TextField(
+                        controller: nameEditingController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: 'Name',
+                          labelStyle: TextStyle(fontSize: 14.0),
+                          hintStyle:
+                              TextStyle(fontSize: 10.0, color: Colors.grey),
+                        ),
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                      SizedBox(
+                        height: 1.0,
+                      ),
+                      TextField(
+                        controller: hospitalEditingController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: 'Hospital',
+                          labelStyle: TextStyle(fontSize: 14.0),
+                          hintStyle:
+                              TextStyle(fontSize: 10.0, color: Colors.grey),
+                        ),
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                      SizedBox(
+                        height: 1.0,
+                      ),
+                      TextField(
+                        controller: phoneEditingController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: 'Phone',
+                          labelStyle: TextStyle(fontSize: 14.0),
+                          hintStyle:
+                              TextStyle(fontSize: 10.0, color: Colors.grey),
+                        ),
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                      SizedBox(
+                        height: 1.0,
+                      ),
+                      TextField(
+                        controller: specializationEditingController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: 'Specialization',
+                          labelStyle: TextStyle(fontSize: 14.0),
+                          hintStyle:
+                              TextStyle(fontSize: 10.0, color: Colors.grey),
+                        ),
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                      SizedBox(
+                        height: 1.0,
+                      ),
+                      TextField(
+                        controller: aboutEditingController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: 'About',
+                          labelStyle: TextStyle(fontSize: 14.0),
+                          hintStyle:
+                              TextStyle(fontSize: 10.0, color: Colors.grey),
+                        ),
+                        style: TextStyle(fontSize: 14.0),
+                      ),
                       SizedBox(
                         height: 50.0,
                       ),
@@ -81,7 +174,7 @@ class _DoctorsRegistrationState extends State<DoctorsRegistration> {
                           height: 50,
                           child: Center(
                             child: Text(
-                              'Login',
+                              'Create account',
                               style: TextStyle(
                                 color: kWhiteColor,
                                 fontSize: 16,
@@ -101,4 +194,37 @@ class _DoctorsRegistrationState extends State<DoctorsRegistration> {
       ),
     );
   }
+
+  // void registerNewUser(BuildContext context) async {
+  //   loader.showDialogue("Registering please wait...");
+  //   try {
+  //     final User user = (await firebaseAuth.createUserWithEmailAndPassword(
+  //             email: emailEditingController.text, password: passwordEditingController.text))
+  //         .user;
+  //     //saving user data to Firebase Database
+
+  //     Map doctorDataMap = {
+  //       "id": user.uid,
+  //       "name": nameController.text.trim(),
+  //       "email": emailController.text.trim(),
+  //       "phone": phoneController.text.trim(),
+  //       "nationalId": idController.text.trim(),
+  //       "image": ""
+  //     };
+
+  //     Map accountDataMap = {"id": user.uid, "amount": "0", "type": "doctor"};
+
+  //     doctorsRef.child(user.uid).set(doctorDataMap);
+  //     accountRef.child(user.uid).set(accountDataMap);
+
+  //     displayToastMessage(context,
+  //         "Congratulations! your account has been created successfully");
+
+  //     Navigator.pushNamedAndRemoveUntil(
+  //         context, HomeScreen.idScreen, (route) => false);
+  //   } catch (e) {
+  //     loader.hideDialogue();
+  //     displayToastMessage(context, "Error: " + e.toString());
+  //   }
+  // }
 }
