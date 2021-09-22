@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:my_doctor/models/Account.dart';
 import 'package:my_doctor/screens/home_screen.dart';
 import 'package:my_doctor/screens/registration.dart';
 import 'package:my_doctor/utils/Loader.dart';
@@ -9,11 +10,39 @@ import 'package:my_doctor/utils/MainAppToast.dart';
 import '../constant.dart';
 import '../main.dart';
 
-class LoginScreen extends StatelessWidget {
-  final emailEditingController = TextEditingController();
-  final passwordEditingController = TextEditingController();
+class LoginScreen extends StatefulWidget {
   static const String idScreen = "login";
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final emailEditingController = TextEditingController();
+
+  final passwordEditingController = TextEditingController();
+
   Loader loader;
+
+  Account userAccount;
+
+  void loadUserAccount() async {
+    accountRef
+        .child(firebaseAuth.currentUser.uid)
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value != null) {
+        setState(() {
+          userAccount = new Account.fromSnapshot(dataSnapshot);
+        });
+        if(userAccount.type.contains("user")){
+          Navigator.pushNamedAndRemoveUntil(
+              context, HomeScreen.idScreen, (route) => false);
+        }else{}
+      } else {}
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     loader = Loader(context);
@@ -134,7 +163,6 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-
   void loginUser(BuildContext context) async {
     loader.showDialogue("Signing in please wait...");
     try {
@@ -150,8 +178,8 @@ class LoginScreen extends StatelessWidget {
                 if (dataSnapshot.value != null) {
                   displayToastMessage(
                       context, "You have been logged in successfully");
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, HomeScreen.idScreen, (route) => false);
+                  loadUserAccount();
+
                 } else {
                   loader.hideDialogue();
                   firebaseAuth.signOut();

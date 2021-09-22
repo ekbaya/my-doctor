@@ -22,6 +22,7 @@ DatabaseReference accountRef = FirebaseDatabase.instance.reference().child("acco
 DatabaseReference categoriesRef = FirebaseDatabase.instance.reference().child("categories");
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
